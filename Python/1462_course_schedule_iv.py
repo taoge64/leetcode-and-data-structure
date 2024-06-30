@@ -2,6 +2,27 @@ from collections import defaultdict
 from typing import List
 from functools import cache
 class Solution:
+    def checkIfPrerequisite_2(self, numCourses: int, prerequisites: List[List[int]], queries: List[List[int]]) -> List[bool]:
+        #o(numCourses+p) SINCE EVERY NODE AND PRE only process once in DFS, so sum them
+        preq = defaultdict(set)
+        reachable = [set() for _ in range(numCourses)]
+        for c,q in prerequisites:
+            preq[c].add(q)
+            # reachable[c].add(q)
+        def check(c):
+            if reachable[c]:
+                return
+            for each in preq[c]:
+                    check(each)
+                    reachable[c].add(each)
+                    reachable[c].update(reachable[each])
+            return
+        res = []
+        for p1,p2 in queries:
+            if not reachable[p1]:
+                check(p1)
+            res.append(p2 in reachable[p1])
+        return res
     def checkIfPrerequisite(self, numCourses: int, prerequisites: List[List[int]], queries: List[List[int]]) -> List[bool]:
         #dfs to track back all potential parent pre
         preq = defaultdict(set)

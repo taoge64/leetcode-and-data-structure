@@ -4,30 +4,29 @@ from typing import List
 class Solution:
     def findOrderSolution2(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
         # bfs
-        # i just want to trace all node back
+        # in bfs, we are try to check if each preq is filled, if that's case add to view
         preq = defaultdict(set)
         graph = defaultdict(set)
-        for c, p in prerequisites:
-            preq[c].add(p)
-            graph[p].add(c)
+        for c, q in prerequisites:
+            preq[c].add(q)
+            graph[q].add(c)
         queue = deque()
-        res = []
         for i in range(numCourses):
-            if i not in preq:
+            if not preq[i]:
+                # those class don't need prerequisites:
                 queue.append(i)
-        taken = []
+        res = []
         while queue:
             c = queue.popleft()
-            taken.append(c)
-            if len(taken) == numCourses:
-                return taken
-            for cor in graph[c]:
-                preq[cor].remove(c)
-                if not preq[cor]:
-                    queue.append(cor)
-        # if you have any prerequisite not able to add, you have a cycle
+            res.append(c)
+            if len(res) == numCourses:
+                return res
+            for each in graph[c]:
+                preq[each].remove(c)
+                if not preq[each]:
+                    queue.append(each)
 
-            return []
+        return []
     def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
         mapping_list = defaultdict(list)
         for c, p in prerequisites:
